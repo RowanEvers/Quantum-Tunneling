@@ -112,10 +112,10 @@ def solve_SE(t,V,p):
 #simulate
 
 #largest range of momentum we found 
-V = dirac_del_barrier(0)*11.37 + dirac_del_barrier(1.07)*11.37
+#V = dirac_del_barrier(0)*11.37 + dirac_del_barrier(1.07)*11.37
 
-#can use other 
-
+#can create other barriers to try 
+V = parabolic_barrier(2, 70)
 
 #find start and end points of potential 
 end_val = 0
@@ -189,12 +189,14 @@ plt.plot(p_range,hlf-thresh,linestyle='dotted')
 plt.show()
 
 #animate 
+FPS = 24
+
 #get different points in time 
 hwp_width = sigma*5
 #set p for animation 
-p = 4
+p = 8
 t = (m/p)*(xi-x_min-hwp_width)
-t_pts = np.linspace(0,t,2)
+t_pts = np.linspace(0,t,FPS)
 Psi_pts = []
 for i in range(len(t_pts)):
     Psi_pts.append(solve_SE(t_pts[i], V, p))
@@ -205,11 +207,12 @@ def animate(i):
     anig.clear()
     Psi = Psi_pts[i]
     anig_handle, = anig.plot((x[1:-1]),np.abs(Psi))
+    anig_handle, = anig.plot((x[1:-1]),np.real(Psi))
     anig.axes.set_ylim(0,3)
     plt.plot(x,2.5*V/max(V))
     
 plt.tight_layout()
 
-ani = animation.FuncAnimation(fig,animate,frames = len(t_pts),interval = 200,repeat = True)
+ani = animation.FuncAnimation(fig,animate,frames = len(t_pts),interval = 2000/FPS,repeat = True)
 
 print('computation time', np.round(time.time()-st,2),'s')
